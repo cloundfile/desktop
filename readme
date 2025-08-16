@@ -1,0 +1,5 @@
+### INSTALAÇÃO LINUX MINT PROGRAMS
+
+chmod +x install.sh
+
+./ install.sh
