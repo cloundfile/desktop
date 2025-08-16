@@ -1,5 +1,7 @@
 ### INSTALAÇÃO LINUX MINT PROGRAMS
 
+```bash
+wget -qO install.sh "https://raw.githubusercontent.com/cloundfile/mint/main/install.sh"
 chmod +x install.sh
-
 ./ install.sh
+```
