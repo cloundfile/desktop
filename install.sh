@@ -32,3 +32,43 @@ else
     echo "✅ Node.js já está instalado:"
     nvm current
 fi
+
+### INSTALAÇÃO DO POSTMAN ###
+echo "🧪 Verificando instalação do Postman..."
+
+if [ -f "/opt/Postman/Postman" ]; then
+    echo "✅ Postman já está instalado em /opt/Postman"
+else
+    echo "⬇️ Instalando Postman..."
+
+    # Baixa o Postman
+    wget https://dl.pstmn.io/download/latest/linux_64 -O postman-linux-x64.tar.gz
+
+    # Extrai o pacote
+    tar -xvzf postman-linux-x64.tar.gz
+
+    # Move para /opt
+    sudo mv Postman /opt/Postman
+
+    # Cria o atalho no /usr/bin
+    sudo ln -sf /opt/Postman/Postman /usr/bin/postman
+
+    # Cria o atalho no menu
+    mkdir -p ~/.local/share/applications
+
+    cat <<EOF > ~/.local/share/applications/postman.desktop
+[Desktop Entry]
+Name=Postman
+Exec=/opt/Postman/Postman
+Icon=/opt/Postman/app/resources/app/assets/icon.png
+Type=Application
+Categories=Development;
+EOF
+
+    chmod +x ~/.local/share/applications/postman.desktop
+
+    # Remove o arquivo .tar.gz após instalação
+    rm -f postman-linux-x64.tar.gz
+
+    echo "✅ Postman instalado com sucesso e adicionado ao menu!"
+fi
