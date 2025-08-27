@@ -1,27 +1,28 @@
 #!/bin/bash
 
-# Instalação silenciosa do NVM (Node Version Manager)
-echo "Iniciando a instalação do NVM..."
+### ============================
+### 1. Instalação do NVM + Node
+### ============================
+
+echo "🚀 Iniciando a instalação do NVM..."
 
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
-# Verifica se a instalação foi concluída com sucesso
 if [ $? -eq 0 ]; then
-    echo "NVM instalado com sucesso!"
-    echo "Para começar a usar o NVM, adicione o seguinte ao seu ~/.bashrc, ~/.zshrc ou ~/.profile:"
-    echo 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"'
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm'
+    echo "✅ NVM instalado com sucesso!"
 else
-    echo "Houve um erro na instalação do NVM."
+    echo "❌ Houve um erro na instalação do NVM."
+    exit 1
 fi
 
-load_nvm
+# Carrega o NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-# Verifica se o Node.js já está instalado via NVM
+# Verifica e instala o Node.js se necessário
 if nvm ls node | grep -q 'N/A'; then
-    echo "🔧 Node.js não encontrado. Instalando a versão mais recente..."
+    echo "🔧 Node.js não encontrado. Instalando..."
     nvm install node
-
     if [ $? -eq 0 ]; then
         echo "✅ Node.js instalado com sucesso!"
     else
@@ -33,7 +34,10 @@ else
     nvm current
 fi
 
-### INSTALAÇÃO DO POSTMAN ###
+### ============================
+### 2. Instalação do Postman
+### ============================
+
 echo "🧪 Verificando instalação do Postman..."
 
 if [ -f "/opt/Postman/Postman" ]; then
@@ -41,19 +45,11 @@ if [ -f "/opt/Postman/Postman" ]; then
 else
     echo "⬇️ Instalando Postman..."
 
-    # Baixa o Postman
     wget https://dl.pstmn.io/download/latest/linux_64 -O postman-linux-x64.tar.gz
-
-    # Extrai o pacote
     tar -xvzf postman-linux-x64.tar.gz
-
-    # Move para /opt
     sudo mv Postman /opt/Postman
-
-    # Cria o atalho no /usr/bin
     sudo ln -sf /opt/Postman/Postman /usr/bin/postman
 
-    # Cria o atalho no menu
     mkdir -p ~/.local/share/applications
 
     cat <<EOF > ~/.local/share/applications/postman.desktop
@@ -66,9 +62,59 @@ Categories=Development;
 EOF
 
     chmod +x ~/.local/share/applications/postman.desktop
-
-    # Remove o arquivo .tar.gz após instalação
     rm -f postman-linux-x64.tar.gz
 
     echo "✅ Postman instalado com sucesso e adicionado ao menu!"
 fi
+
+### ============================
+### 3. Instalação do SQL Developer
+### ============================
+
+echo "⬇️ Baixando SQL Developer..."
+
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+https://download.oracle.com/otn_software/java/sqldeveloper/sqldeveloper-24.3.1.347.1826-no-jre.zip
+
+echo "📦 Extraindo SQL Developer..."
+unzip sqldeveloper-24.3.1.347.1826-no-jre.zip
+
+echo "📁 Movendo para /opt..."
+sudo mv sqldeveloper /opt/
+
+echo "🔐 Dando permissão ao script..."
+sudo chmod +x /opt/sqldeveloper/sqldeveloper.sh
+
+echo "🚀 Executando SQL Developer pela primeira vez..."
+sudo sh /opt/sqldeveloper/sqldeveloper.sh &
+
+echo "🌳 Instalando tree..."
+sudo apt update && sudo apt install -y tree
+
+echo "🔧 Adicionando SQL Developer ao PATH..."
+echo 'export PATH=$PATH:/opt/sqldeveloper' >> ~/.bashrc
+source ~/.bashrc
+
+echo "📂 Criando atalho no menu de aplicativos..."
+mkdir -p ~/.local/share/applications/
+cat <<EOF > ~/.local/share/applications/sqldeveloper.desktop
+[Desktop Entry]
+Name=SQL Developer
+Comment=Ferramenta de Desenvolvimento para Oracle SQL
+Exec=/opt/sqldeveloper/sqldeveloper.sh
+Icon=/opt/sqldeveloper/icon.png
+Terminal=false
+Type=Application
+Categories=Development;Database;
+EOF
+
+chmod +x ~/.local/share/applications/sqldeveloper.desktop
+update-desktop-database ~/.local/share/applications/
+
+echo "✅ SQL Developer instalado e adicionado ao menu!"
+
+### ============================
+### Finalização
+### ============================
+
+echo "🎉 Todos os componentes foram instalados com sucesso!"
