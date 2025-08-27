@@ -1,6 +1,21 @@
 #!/bin/bash
 
 ### ============================
+### 0. Instalar OpenJDK 11
+### ============================
+echo "☕ Instalando OpenJDK 11..."
+sudo apt update
+sudo apt install -y openjdk-11-jdk
+
+# Verifica a instalação do Java
+if java -version &>/dev/null; then
+    echo "✅ OpenJDK 11 instalado com sucesso!"
+else
+    echo "❌ Falha na instalação do OpenJDK 11."
+    exit 1
+fi
+
+### ============================
 ### 1. Instalação do NVM + Node
 ### ============================
 
@@ -118,3 +133,4 @@ echo "✅ SQL Developer instalado e adicionado ao menu!"
 ### ============================
 
 echo "🎉 Todos os componentes foram instalados com sucesso!"
+
